@@ -1,0 +1,13 @@
+<tables>
+    <init-table>
+        <row><element>O</element><element>I</element><element>O</element></row>
+        <row><element>I</element><element>O</element><element>I</element></row>
+        <row><element>O</element><element>I</element><element>O</element></row>
+    </init-table>
+
+    <end-table>
+        <row><element>O</element><element>I</element><element>O</element></row>
+        <row><element>O</element><element>I</element><element>O</element></row>
+        <row><element>I</element><element>O</element><element>I</element></row>
+    </end-table>
+</tables>

@@ -3,16 +3,11 @@
  */
 package hu.nye.mestint;
 
-import hu.nye.mestint.model.table.Tables;
 import hu.nye.mestint.service.PuzzleN;
-import hu.nye.mestint.service.search.*;
-import hu.nye.mestint.util.ArrayUtil;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
+import hu.nye.mestint.service.search.AbstractSolver;
+import hu.nye.mestint.service.search.BreadthFirstSolver;
+import hu.nye.mestint.service.search.State;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,7 +38,6 @@ public class Tester {
     }
     private static void trySolvers(State initialState) {
 
-        //trySolver(initialState, new DepthFirstSolver());
         trySolver(initialState, new BreadthFirstSolver());
         //trySolver(initialState, new BestFirstSolver());
     }

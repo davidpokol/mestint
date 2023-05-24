@@ -5,8 +5,7 @@ import hu.nye.mestint.model.table.Table;
 import java.util.Arrays;
 
 public class ArrayUtil {
-
-    public String[][] convertTableToStringTable(Table table) {
+    public String[][] convertTableToStringArray(Table table) {
 
         String[][] result = new String[table.getRows().size()][];
         for (int i = 0; i < result.length; i++) {

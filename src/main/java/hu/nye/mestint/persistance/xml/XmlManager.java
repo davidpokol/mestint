@@ -1,6 +1,8 @@
 package hu.nye.mestint.persistance.xml;
 
 import hu.nye.mestint.model.table.Tables;
+import hu.nye.mestint.service.TableValidator;
+import hu.nye.mestint.service.exception.TableSizeException;
 import hu.nye.mestint.util.ArrayUtil;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -11,6 +13,8 @@ import java.io.File;
 public class XmlManager {
 
     private static final String FILE_NAME = "tables.xml";
+    private final TableValidator tableValidator = new TableValidator();
+    private final ArrayUtil arrayUtil = new ArrayUtil();
 
     public Tables getTables() {
 
@@ -22,7 +26,14 @@ public class XmlManager {
 
             tables = (Tables) jaxbUnmarshaller.unmarshal(file);
 
-        } catch (JAXBException | RuntimeException e) {
+            String[][] initTable = arrayUtil.convertTableToStringArray(tables.getInitialTable());
+            String[][] endTable = arrayUtil.convertTableToStringArray(tables.getEndTable());
+
+            tableValidator.validate(initTable);
+            tableValidator.validate(endTable);
+            tableValidator.compare(initTable.length, endTable.length);
+
+        } catch (JAXBException | TableSizeException e) {
             e.printStackTrace();
             tables = null;
         }

@@ -8,7 +8,6 @@ import java.io.File;
 
 public class XmlRepository {
 
-
     private Tables tables;
     private final Marshaller marshaller;
     private final Unmarshaller unmarshaller;

@@ -11,7 +11,6 @@ public class Operations {
         return table;
     }
 
-
     public String[][] swapColumns(String[][] table, int firstColumnIndex, int secondColumnIndex) {
 
         String[] tmp = new String[table.length];
@@ -27,5 +26,15 @@ public class Operations {
         }
 
         return table;
+    }
+
+    public boolean areColumnsEqual(String[][] table, int firstColumnIndex, int secondColumnIndex) {
+        int elementsMatch = 0;
+        for (int a = 0; a < table.length; a++) {
+            if (table[a][firstColumnIndex].equals(table[a][secondColumnIndex])) {
+                elementsMatch++;
+            }
+        }
+        return elementsMatch == table.length;
     }
 }

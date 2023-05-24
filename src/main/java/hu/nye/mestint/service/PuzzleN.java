@@ -4,7 +4,7 @@ import hu.nye.mestint.model.enums.Operation;
 import hu.nye.mestint.persistance.xml.XmlManager;
 import hu.nye.mestint.service.search.AbstractState;
 import hu.nye.mestint.service.search.State;
-import hu.nye.mestint.ui.TableUI;
+import hu.nye.mestint.ui.PuzzleNUI;
 import hu.nye.mestint.util.ArrayUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,20 +18,22 @@ import java.util.Objects;
 @Getter
 public class PuzzleN extends AbstractState {
 
-    private final XmlManager xmlManager = new XmlManager();
+    private XmlManager xmlManager = new XmlManager();
     private final ArrayUtil arrayUtil = new ArrayUtil();
     private final Operations operations = new Operations();
-    private static int size = 3;
+
+    private String [][] table = arrayUtil.convertTableToStringArray(xmlManager.getTables().getInitialTable());
+    private String [][] endTable = arrayUtil.convertTableToStringArray(xmlManager.getTables().getEndTable());
+    private int size = table.length;
+
     private int stateCount = 0;
-
-    private String [][] table = arrayUtil.convertTableToStringTable(xmlManager.getTables().getInitialTable());
-
     private Operation lastOperation = null;
     private Integer lastA = null;
     private Integer lastB =  null;
 
-    PuzzleN (PuzzleN parent, Operation operation, int a, int b) {
+    PuzzleN (XmlManager xmlManager, PuzzleN parent, Operation operation, int a, int b) {
         super(parent);
+        this.xmlManager = xmlManager;
 
         if(operation.equals(Operation.HORIZONTAL)) {
             this.table = operations.swapRows(arrayUtil.deepCopy(parent.table), a, b);
@@ -49,8 +51,9 @@ public class PuzzleN extends AbstractState {
 
         List<State> possibleMoves = new ArrayList<>();
 
+        int k = 0;
         for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+            for (int j = k; j < size; j++) {
                 if(i == j) {
                     continue;
                 }
@@ -58,33 +61,51 @@ public class PuzzleN extends AbstractState {
                 if(!Objects.isNull(lastOperation) && !Objects.isNull(lastA) && !Objects.isNull(lastB)) {
                     if ((lastA == i && lastB == j) || (lastA == j && lastB == i)) {
 
-                        if (lastOperation.equals(Operation.HORIZONTAL)) {
-                            possibleMoves.add(new PuzzleN(this, Operation.VERTICAL, i, j));
-                        } else {
-                            possibleMoves.add(new PuzzleN(this, Operation.HORIZONTAL, i, j));
+                        if (lastOperation.equals(Operation.HORIZONTAL) && !Arrays.equals(table[i], table[j])) {
+                            possibleMoves.add(new PuzzleN(xmlManager, this, Operation.VERTICAL, i, j));
+                        } else if (!operations.areColumnsEqual(table, i, j)) {
+                            possibleMoves.add(new PuzzleN(xmlManager, this, Operation.HORIZONTAL, i, j));
                         }
                     }
                 }
-                possibleMoves.add(new PuzzleN(this, Operation.HORIZONTAL, i, j));
-                possibleMoves.add(new PuzzleN(this, Operation.VERTICAL, i, j));
+                if(!Arrays.equals(table[i], table[j])) { // sor szerinti összehasonlítás
+                    possibleMoves.add(new PuzzleN(xmlManager, this, Operation.HORIZONTAL, i, j));
+                }
+
+                if (!operations.areColumnsEqual(table, i, j)) {// oszlop szerinti összehasonlítás
+                    possibleMoves.add(new PuzzleN(xmlManager, this, Operation.VERTICAL, i, j));
+                }
             }
+            k++;
         }
         return possibleMoves;
     }
 
+
+
+
     @Override
     public boolean isSolution() {
-        String[][] convert = arrayUtil.convertTableToStringTable(xmlManager.getTables().getEndTable());
-        return Arrays.deepEquals(table, convert);
+        return Arrays.deepEquals(table, endTable);
     }
 
     @Override
     public double getHeuristic() {
-        return 0;
+        int differentCharacters = 0;
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (!table[i][j].equals(endTable[i][j])) {
+                    differentCharacters++;
+                }
+            }
+        }
+
+        return differentCharacters;
     }
 
     @Override
     public String toString() {
-        return TableUI.getToString(this);
+        return PuzzleNUI.getToString(this);
     }
 }

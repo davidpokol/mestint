@@ -1,5 +1,5 @@
 # Beadandó feladat Mesterséges intelligencia tárgyra
-A PuzzleN osztály, szélességi kereső segítségével jut el a kezdőállapotból a végállapotig.
+A PuzzleN osztály, **mélységi**, **szélességi**, vagy **legjobbat-először (A\*)** keresők egyikével jut el, a kezdőállapotból a végállapotba.
 #### Műveletek:
 - sorcsere
 - oszlopcsere
